@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #define MAX_RECORDS 1000
 
@@ -11,13 +10,30 @@ typedef struct {
     float custo;
 } Registro;
 
-Registro registros[MAX_RECORDS];
+Registro *registros = NULL;
 int totalRegistros = 0;
+int capacidade = 10;
+
+void alocarMemoria() {
+    registros = (Registro *)malloc(capacidade * sizeof(Registro));
+    if (registros == NULL) {
+        printf("Erro ao alocar memoria.\n");
+        exit(1);
+    }
+}
+
+void realocarMemoria() {
+    capacidade *= 2;
+    registros = (Registro *)realloc(registros, capacidade * sizeof(Registro));
+    if (registros == NULL) {
+        printf("Erro ao realocar memoria.\n");
+        exit(1);
+    }
+}
 
 void registrarConsumo() {
-    if (totalRegistros >= MAX_RECORDS) {
-        printf("Capacidade máxima de registros atingida.\n");
-        return;
+    if (totalRegistros >= capacidade) {
+        realocarMemoria();
     }
 
     Registro novo;
