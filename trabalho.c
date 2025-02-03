@@ -19,7 +19,7 @@ void alocarMemoria() {
     if (registros == NULL) {
         printf("Erro ao alocar memória.\n");
         exit(1);
-    }
+            }
 }
 
 void realocarMemoria() {
@@ -61,6 +61,44 @@ void registrarConsumo() {
 
     printf("Registro salvo com sucesso.\n");
 }
+
+float calcularMedia(char tipo) {
+    if (totalRegistros == 0) {
+        printf("Nenhum registro encontrado.\n");
+        return 0;
+    }
+
+    float totalConsumo = 0;
+    int unidadesUnicas = 0;
+    char ultimaUnidade[20] = "";
+
+    for (int i = 0; i < totalRegistros; i++) {
+        totalConsumo += registros[i].consumo;
+        char unidadeAtual[20] = "";
+
+        if (tipo == 'D') {
+            strncpy(unidadeAtual, registros[i].dataHora, 10);
+            unidadeAtual[10] = '\0';
+        } else if (tipo == 'S') {
+            int dia, mes, ano;
+            sscanf(registros[i].dataHora, "%d-%d-%d", &dia, &mes, &ano);
+            int semana = (dia - 1) / 7 + 1;
+            sprintf(unidadeAtual, "%d-%02d", ano, semana);
+        } else if (tipo == 'M') {
+            int dia, mes, ano;
+            sscanf(registros[i].dataHora, "%d-%d-%d", &dia, &mes, &ano);
+            sprintf(unidadeAtual, "%d-%02d", ano, mes);
+        }
+
+        if (strcmp(unidadeAtual, ultimaUnidade) != 0) {
+            unidadesUnicas++;
+            strcpy(ultimaUnidade, unidadeAtual);
+        }
+    }
+
+    return totalConsumo / unidadesUnicas;
+}
+
 
 void menu() {
     int opcao;
