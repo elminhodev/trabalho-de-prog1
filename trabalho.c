@@ -99,6 +99,20 @@ float calcularMedia(char tipo) {
     return totalConsumo / unidadesUnicas;
 }
 
+void identificarPicos() {
+    if (totalRegistros == 0) {
+        printf("Nenhum registro encontrado.\n");
+        return;
+    }
+
+    float media = calcularMedia('D');
+    printf("Picos de consumo (consumo acima de 1.5 vezes a media diaria):\n");
+    for (int i = 0; i < totalRegistros; i++) {
+        if (registros[i].consumo > 1.5 * media) {
+            printf("%s - %.2f kWh\n", registros[i].dataHora, registros[i].consumo);
+        }
+    }
+}
 
 void menu() {
     int opcao;
