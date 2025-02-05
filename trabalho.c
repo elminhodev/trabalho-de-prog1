@@ -114,6 +114,72 @@ void identificarPicos() {
     }
 }
 
+void consumoTotalRecursivo(int index, float *totalConsumo, float *totalCusto) {
+    if (index >= totalRegistros) {
+        return;
+    }
+    *totalConsumo += registros[index].consumo;
+    *totalCusto += registros[index].consumo * registros[index].custo;
+    consumoTotalRecursivo(index + 1, totalConsumo, totalCusto);
+}
+
+void exibirConsumoTotal() {
+    float totalConsumo = 0, totalCusto = 0;
+    consumoTotalRecursivo(0, &totalConsumo, &totalCusto);
+    printf("Consumo total: %.2f kWh\n", totalConsumo);
+    printf("Custo total estimado: R$ %.2f\n", totalCusto);
+}
+
+void gerarRelatorio() {
+    FILE *arquivo = fopen("relatorio.txt", "w");
+    if (arquivo == NULL) {
+        printf("Erro ao criar o arquivo de relatorio.\n");
+        return;
+    }
+
+    fprintf(arquivo, "Relatorio de Consumo:\n\n");
+    for (int i = 0; i < totalRegistros; i++) {
+        fprintf(arquivo, "%s - Consumo: %.2f kWh - Custo por kWh: R$ %.2f\n",
+                registros[i].dataHora, registros[i].consumo, registros[i].custo);
+    }
+
+    fclose(arquivo);
+    printf("Relatorio gerado com sucesso no arquivo 'relatorio.txt'.\n");
+}
+
+void analisarPadroes() {
+    if (totalRegistros == 0) {
+        printf("Nenhum registro para analise.\n");
+        return;
+    }
+
+    float consumoPorHora[24] = {0};
+    int contagemPorHora[24] = {0};
+
+    for (int i = 0; i < totalRegistros; i++) {
+        int hora;
+        sscanf(registros[i].dataHora, "%*d-%*d-%*d %d", &hora);
+        consumoPorHora[hora] += registros[i].consumo;
+        contagemPorHora[hora]++;
+    }
+
+    int horaPico = 0;
+    float maiorMedia = 0;
+    for (int h = 0; h < 24; h++) {
+        if (contagemPorHora[h] > 0) {
+            float media = consumoPorHora[h] / contagemPorHora[h];
+            if (media > maiorMedia) {
+                maiorMedia = media;
+                horaPico = h;
+            }
+        }
+    }
+
+    printf("\n=== SUGESTOES PARA ECONOMIA ===\n");
+    printf("Horario de maior consumo: %02d:00 as %02d:59\n", horaPico, horaPico);
+    printf("1. Reduzir uso neste horario.\n");
+    printf("2. Verificar desperdicios.\n");
+}
 
 void menu() {
     int opcao;
