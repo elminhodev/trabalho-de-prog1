@@ -32,6 +32,11 @@ void realocarMemoria() {
 }
 
 void registrarConsumo() {
+    if (totalRegistros >= MAX_RECORDS) {
+        printf("Limite de registros atingido.\n");
+        return;
+    }
+    
     if (totalRegistros >= capacidade) {
         realocarMemoria();
     }
