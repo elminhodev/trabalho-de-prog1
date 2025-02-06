@@ -33,8 +33,7 @@ void realocarMemoria() {
 
 void registrarConsumo() {
     if (totalRegistros >= capacidade) {
-        printf("Capacidade maxima de registros atingida.\n");
-        return;
+        realocarMemoria();
     }
 
     Registro novo;
@@ -195,7 +194,7 @@ void menu() {
         printf("7. Gerar relatorio detalhado\n");
         printf("8. Sugestoes para melhorar o consumo\n");
         printf("0. Sair\n");
-        printf("Escolha uma opcao:: ");
+        printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
 
         switch (opcao) {
